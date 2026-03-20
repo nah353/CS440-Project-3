@@ -1,0 +1,17 @@
+{
+  "name": "nau-recipe-app-root",
+  "private": true,
+  "scripts": {
+    "setup": "node setup-env.js && npm install && npm run install-client && npm run install-server-ai",
+    "install-client": "cd client && npm install",
+    "install-server-ai": "cd server && npm install @google/generative-ai multer dotenv",
+    "dev": "concurrently --kill-others \"npm --prefix ./server run dev\" \"npm --prefix ./client run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@google/genai": "^1.41.0",
+    "dotenv": "^17.3.1"
+  }
+}
