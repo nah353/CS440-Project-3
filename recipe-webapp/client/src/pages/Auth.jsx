@@ -1,8 +1,13 @@
+/**
+ * Auth Page - Presentation Layer
+ * Renders login/registration form
+ */
 import React, { useState } from "react";
-import { loginUser, registerUser } from "../api/auth";
-import { setAuthToken } from "../api/client";
+import { AuthService } from "../services/authService";
+import { useAppContext } from "../store/appContext";
 
-export default function Auth({ onAuthenticated }) {
+export default function Auth() {
+  const { registerUser, loginUser } = useAppContext();
   const [mode, setMode] = useState("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -23,10 +28,11 @@ export default function Auth({ onAuthenticated }) {
 
     setLoading(true);
     try {
-      const payload = { username: normalizedUsername, password };
-      const result = isLogin ? await loginUser(payload) : await registerUser(payload);
-      setAuthToken(result.token);
-      onAuthenticated?.(result.user);
+      if (isLogin) {
+        await loginUser(normalizedUsername, password);
+      } else {
+        await registerUser(normalizedUsername, password);
+      }
       setPassword("");
     } catch (err) {
       setError(err.message || "Authentication failed.");
@@ -39,25 +45,30 @@ export default function Auth({ onAuthenticated }) {
     <div className="container">
       <h1>{isLogin ? "Login" : "Create Account"}</h1>
       <p className="muted">
-        Create a username/password account, then you can publish recipes publicly under your username.
+        Create a username/password account, then you can publish recipes
+        publicly under your username.
       </p>
 
       {error && (
-        <p style={{
-          color: '#ff6b6b',
-          padding: '12px',
-          background: 'rgba(255, 107, 107, 0.1)',
-          borderLeft: '4px solid #ff6b6b',
-          borderRadius: '4px',
-          marginBottom: '16px'
-        }}>
+        <p
+          style={{
+            color: "#ff6b6b",
+            padding: "12px",
+            background: "rgba(255, 107, 107, 0.1)",
+            borderLeft: "4px solid #ff6b6b",
+            borderRadius: "4px",
+            marginBottom: "16px"
+          }}
+        >
           ❌ {error}
         </p>
       )}
 
-      <form onSubmit={handleSubmit} style={{ maxWidth: '420px' }}>
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{ fontWeight: '600', color: 'var(--nau-gold)' }}>Username</label>
+      <form onSubmit={handleSubmit} style={{ maxWidth: "420px" }}>
+        <div style={{ marginBottom: "16px" }}>
+          <label style={{ fontWeight: "600", color: "var(--nau-gold)" }}>
+            Username
+          </label>
           <input
             type="text"
             value={username}
@@ -67,8 +78,10 @@ export default function Auth({ onAuthenticated }) {
           />
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label style={{ fontWeight: '600', color: 'var(--nau-gold)' }}>Password</label>
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ fontWeight: "600", color: "var(--nau-gold)" }}>
+            Password
+          </label>
           <input
             type="password"
             value={password}
@@ -78,12 +91,16 @@ export default function Auth({ onAuthenticated }) {
           />
         </div>
 
-        <button type="submit" disabled={loading} style={{ width: '100%' }}>
-          {loading ? "Please wait..." : isLogin ? "Login" : "Create Account"}
+        <button type="submit" disabled={loading} style={{ width: "100%" }}>
+          {loading
+            ? "Please wait..."
+            : isLogin
+              ? "Login"
+              : "Create Account"}
         </button>
       </form>
 
-      <p className="muted" style={{ marginTop: '16px' }}>
+      <p className="muted" style={{ marginTop: "16px" }}>
         {isLogin ? "Need an account?" : "Already have an account?"}{" "}
         <button
           type="button"
@@ -92,11 +109,11 @@ export default function Auth({ onAuthenticated }) {
             setError("");
           }}
           style={{
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--nau-gold)',
-            textDecoration: 'underline',
-            cursor: 'pointer',
+            background: "transparent",
+            border: "none",
+            color: "var(--nau-gold)",
+            textDecoration: "underline",
+            cursor: "pointer",
             padding: 0
           }}
         >

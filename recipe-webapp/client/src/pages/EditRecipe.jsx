@@ -1,5 +1,9 @@
+/**
+ * EditRecipe Page - Presentation Layer
+ * Renders form to edit an existing recipe
+ */
 import React, { useState, useRef } from "react";
-import { updateRecipe } from "../api/recipes";
+import { RecipeService } from "../services/recipeService";
 
 export default function EditRecipe({ recipe, onRecipeUpdated }) {
   const [formData, setFormData] = useState({
@@ -114,7 +118,7 @@ export default function EditRecipe({ recipe, onRecipeUpdated }) {
 
       console.log("Updating recipe with payload:", { ...payload, image: image ? "base64 image" : null });
 
-      const updatedRecipe = await updateRecipe(recipe.id, payload);
+      const updatedRecipe = await RecipeService.updateRecipe(recipe.id, payload);
       
       console.log("Recipe updated successfully:", updatedRecipe);
 
