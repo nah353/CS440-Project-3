@@ -1,5 +1,9 @@
+/**
+ * AddRecipe Page - Presentation Layer
+ * Renders form to create a new recipe
+ */
 import React, { useState, useRef } from "react";
-import { createRecipe } from "../api/recipes";
+import { RecipeService } from "../services/recipeService";
 
 export default function AddRecipe({ onRecipeAdded, currentUser, onRequireAuth }) {
   const [formData, setFormData] = useState({
@@ -107,7 +111,7 @@ export default function AddRecipe({ onRecipeAdded, currentUser, onRequireAuth })
 
       console.log("Creating recipe with payload:", { ...payload, image: imageBase64 ? "base64 image" : null });
 
-      const newRecipe = await createRecipe(payload);
+      const newRecipe = await RecipeService.createRecipe(payload);
       
       console.log("Recipe created successfully:", newRecipe);
 
