@@ -104,7 +104,7 @@ docker compose -f infra/docker-compose.yml up -d --build
 Make sure you are in:
 
 ```powershell
-cd "...\CS440---Project-1\recipe-webapp"
+cd "...\CS440---Project-3\recipe-webapp"
 ```
 
 Then run:
