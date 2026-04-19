@@ -76,36 +76,6 @@ VITE_API_BASE=http://localhost:4000/api
 
 > AI analysis endpoint requires `GEMINI_API_KEY`.
 
-## Run (recommended): Microservices via Docker
-
-From the project root, build and start the gateway and services:
-
-```powershell
-cd "...\CS440---Project-3\recipe-webapp"
-docker compose -f infra/docker-compose.yml up -d --build
-```
-
-- API gateway (NGINX): `http://localhost:4000` (exposes `/api/*`)
-- Run the frontend locally for fast HMR: `npm --prefix ./client run dev` → `http://localhost:5173`
-
-Useful commands:
-
-```powershell
-# stop
-docker compose -f infra/docker-compose.yml down
-
-# view logs for a service
-docker compose -f infra/docker-compose.yml logs -f auth
-
-# rebuild a single service
-docker compose -f infra/docker-compose.yml up -d --build recipes
-docker compose -f infra/docker-compose.yml restart gateway
-```
-
-Notes:
-- The microservices setup is the primary, maintained workflow. The gateway centralizes CORS and routing.
-- The old monolith dev flow still exists: `npm run dev` (runs server+client concurrently) but is no longer the recommended path — the microservices Docker Compose setup is preferred.
-
 ## Run with Docker (microservices)
 
 After cloning, build and start the microservices gateway and backend containers from the project root:
