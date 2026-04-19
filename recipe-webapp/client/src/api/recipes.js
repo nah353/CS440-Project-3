@@ -2,7 +2,7 @@ import { apiGet, apiPost, apiPut, apiDelete } from "./client";
 
 export function fetchRecipes(q = "") {
   const qs = q ? `?q=${encodeURIComponent(q)}` : "";
-  return apiGet(`/recipes${qs}`);
+  return apiGet(`/recipes/${qs}`);
 }
 
 export function getRecipeById(id) {
@@ -10,7 +10,7 @@ export function getRecipeById(id) {
 }
 
 export function createRecipe(payload) {
-  return apiPost("/recipes", payload);
+  return apiPost("/recipes/", payload);
 }
 
 export function updateRecipe(id, payload) {

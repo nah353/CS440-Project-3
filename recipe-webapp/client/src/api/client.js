@@ -1,4 +1,6 @@
-const BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000/api";
+// Use Vite dev proxy by default (when running `npm run dev`).
+// In production set `VITE_API_BASE` to your API gateway or server base URL.
+const BASE = import.meta.env.VITE_API_BASE || "/api";
 
 export const AUTH_TOKEN_KEY = "recipe_auth_token";
 

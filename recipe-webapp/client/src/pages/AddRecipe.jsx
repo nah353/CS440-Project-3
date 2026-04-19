@@ -108,6 +108,8 @@ export default function AddRecipe({ onRecipeAdded, currentUser, onRequireAuth })
         instructions: formData.instructions.trim(),
         image: imageBase64
       };
+      // include creator username so service can persist ownership
+      if (currentUser && currentUser.username) payload.createdBy = currentUser.username;
 
       console.log("Creating recipe with payload:", { ...payload, image: imageBase64 ? "base64 image" : null });
 

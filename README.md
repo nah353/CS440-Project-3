@@ -4,10 +4,7 @@ Full-stack recipe application with manual recipe publishing, account-based owner
 
 ## Project Overview
 
-This project has two apps that run together:
-
-- **Client** (`Vite + React`): `http://localhost:5173`
-- **Server** (`Express` API): `http://localhost:4000`
+This repository now runs as a set of Dockerized microservices behind an NGINX API gateway. The recommended development flow is to run the backend services via Docker Compose and the frontend as a local Vite dev server.
 
 Core capabilities:
 
@@ -50,7 +47,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 From the project folder:
 
 ```powershell
-cd "...\CS440---Project-1\recipe-webapp"
+cd "...\CS440---Project-3\recipe-webapp"
 npm run setup
 ```
 
@@ -79,20 +76,48 @@ VITE_API_BASE=http://localhost:4000/api
 
 > AI analysis endpoint requires `GEMINI_API_KEY`.
 
-## Run the App
+## Run (recommended): Microservices via Docker
 
-From `recipe-webapp`:
+From the project root, build and start the gateway and services:
 
 ```powershell
-npm run dev
+cd "...\CS440---Project-3\recipe-webapp"
+docker compose -f infra/docker-compose.yml up -d --build
 ```
 
-This runs both apps concurrently:
+- API gateway (NGINX): `http://localhost:4000` (exposes `/api/*`)
+- Run the frontend locally for fast HMR: `npm --prefix ./client run dev` → `http://localhost:5173`
 
-- Server: `npm --prefix ./server run dev`
-- Client: `npm --prefix ./client run dev`
+Useful commands:
 
-Open `http://localhost:5173`.
+```powershell
+# stop
+docker compose -f infra/docker-compose.yml down
+
+# view logs for a service
+docker compose -f infra/docker-compose.yml logs -f auth
+
+# rebuild a single service
+docker compose -f infra/docker-compose.yml up -d --build recipes
+docker compose -f infra/docker-compose.yml restart gateway
+```
+
+Notes:
+- The microservices setup is the primary, maintained workflow. The gateway centralizes CORS and routing.
+- The old monolith dev flow still exists: `npm run dev` (runs server+client concurrently) but is no longer the recommended path — the microservices Docker Compose setup is preferred.
+
+## Run with Docker (microservices)
+
+After cloning, build and start the microservices gateway and backend containers from the project root:
+
+```powershell
+cd "...\CS440---Project-3\recipe-webapp"
+docker compose -f infra/docker-compose.yml up -d --build
+```
+
+- Gateway (NGINX) → http://localhost:4000 (API base)
+- Frontend (dev) → run locally: `npm --prefix ./client run dev` → http://localhost:5173
+
 
 ## Current UI Behavior
 

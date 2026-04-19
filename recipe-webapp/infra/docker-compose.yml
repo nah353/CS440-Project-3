@@ -1,0 +1,78 @@
+services:
+  auth-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: authpass
+      POSTGRES_DB: authdb
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+
+  mongo-db:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+
+  minio:
+    image: minio/minio:latest
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+    volumes:
+      - minio-data:/data
+
+  auth:
+    build:
+      context: ..
+      dockerfile: services/auth/Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ../services/auth/.env
+    depends_on:
+      - auth-db
+
+  recipes:
+    build:
+      context: ..
+      dockerfile: services/recipes/Dockerfile
+    ports:
+      - "5001:5001"
+    env_file:
+      - ../services/recipes/.env
+    depends_on:
+      - mongo-db
+
+  media:
+    build:
+      context: ..
+      dockerfile: services/media/Dockerfile
+    ports:
+      - "5002:5002"
+    env_file:
+      - ../services/media/.env
+    depends_on:
+      - minio
+
+  gateway:
+    image: nginx:stable-alpine
+    ports:
+      - "4000:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - recipes
+      - media
+
+volumes:
+  auth-data:
+  mongo-data:
+  minio-data:
+
+networks:
+  default:
+    name: recipe_microservices_net

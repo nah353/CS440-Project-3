@@ -8,7 +8,11 @@ const DEV_OVERRIDE_USER = "xfilly";
 
 export const RecipeService = {
   async listRecipes(query = "") {
-    return RecipeAPI.fetchRecipes(query);
+    const res = await RecipeAPI.fetchRecipes(query);
+    // API returns { recipes: [] } from the gateway; normalize to array
+    if (Array.isArray(res)) return res;
+    if (res && Array.isArray(res.recipes)) return res.recipes;
+    return [];
   },
 
   async getRecipeById(id) {
